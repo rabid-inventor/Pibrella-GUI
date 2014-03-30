@@ -8,20 +8,28 @@ class Settings:
    version = 0.1
    winx = 640
    winy = 480
-   refreshFPS = 15
+   refreshFPS = 50
    winRes = (winx ,winy)
    title = 'Pibrella GUI   ' + str(version)
    #Logo Settings
    logoImg = 'pibrella-logo.png'
    logoSize = (200,85)
    logoPos = (60,0)
+   #Led Possitions
+   redPos = (162,120)
+   greenPos = (162,230)
+   amberPos = (162,175)
+   ledtouchsize = 20
+   #buzzer position
+   buzzPos = (226 ,175)
+   buzztouchsize = 20
+   
 
-#Setting up window
-mainWin = pg.display.set_mode(Settings.winRes)
-pg.display.set_caption(Settings.title)
 
+#Setting Colour for pygame
 class Colour:
    white = pg.Color(255,255,255)
+   black = pg.Color(0,0,0)
    redon = pg.Color(255,0,0)
    redoff = pg.Color(50,0,0)
    amberon = pg.Color(255,255,0)
@@ -42,9 +50,9 @@ class Leds():
    #pibleds = pibrella.light
    #greenon = pibleds.green.on()
    #greenoff = pibleds.green.off()
-   
    def ledControl(self, color , location):
       pg.draw.circle(mainWin,color,location,20,0)
+   
    
 class PibImg:
    pibImg = 'pibrella-pcb.png'
@@ -55,14 +63,27 @@ class PibImg:
 
 
    
+#Setting up window
+mainWin = pg.display.set_mode(Settings.winRes)
+pg.display.set_caption(Settings.title)
 
+#Simplifiy fuction 
+showSprite = mainWin.blit
+
+#Create instance for led control
 leds = Leds()
-leds.redStat = 0
-#trafficleds = Leds()
-leds.ledControl(Colour.redoff,(162,120))
+
+#Start pyGame
 pg.init()
+
+#Start Frame clock
 fpsClock= pg.time.Clock()
-#setting up sprites
+
+#Setup Font
+pibFont = pg.font.SysFont("monospace", 15)
+infotxt = pibFont.render(('Pibrella GUI version: ' + str(Settings.version)+ '  ' + str(fpsClock)),1,(0,0,0))
+
+#Setting up Background sprites
 logo = pg.image.load(Settings.logoImg)
 logo = pg.transform.scale(logo, Settings.logoSize)
 board = pg.image.load(PibImg.pibImg)
@@ -70,49 +91,54 @@ board = pg.transform.scale(board, PibImg.pibSize)
 
 
 
-showSprite = mainWin.blit
-
 def checkMouse(cordsx, cordsy):
-   if((140 < cordsx <182) and (100 < cordsy < 140)):
+   if(((Settings.redPos[0] - Settings.ledtouchsize) < cordsx <(Settings.redPos[0] + Settings.ledtouchsize)) and (Settings.redPos[1] - Settings.ledtouchsize) < cordsy <(Settings.redPos[1] + Settings.ledtouchsize)):
       leds.redStat = not leds.redStat
 
-   if((140 < cordsx <182) and (220 < cordsy < 250)):
+   if(((Settings.greenPos[0] - Settings.ledtouchsize) < cordsx <(Settings.greenPos[0] + Settings.ledtouchsize)) and (Settings.greenPos[1] - Settings.ledtouchsize) < cordsy <(Settings.greenPos[1] + Settings.ledtouchsize)):
       leds.greenStat = not leds.greenStat
 
-   if((140 < cordsx <182) and (160 < cordsy < 180)):
+   if(((Settings.amberPos[0] - Settings.ledtouchsize) < cordsx <(Settings.amberPos[0] + Settings.ledtouchsize)) and (Settings.amberPos[1] - Settings.ledtouchsize) < cordsy <(Settings.amberPos[1] + Settings.ledtouchsize)):
       leds.amberStat = not leds.amberStat
-      
+
+   if(((Settings.buzzPos[0] - Settings.buzztouchsize) < cordsx <(Settings.buzzPos[0] + Settings.buzztouchsize)) and (Settings.buzzPos[1] - Settings.buzztouchsize) < cordsy <(Settings.buzzPos[1] + Settings.buzztouchsize)):
+      print('BUZZZZZZ!') 
       #leds.ledsSprite()
       #print('click')
       return
      
-   
+
 
     
 while 1:
+   #fps display
+   infotxt = pibFont.render(('Pibrella GUI version: ' + str(Settings.version)+ '  ' + str(fpsClock)),1,(0,0,0))
 
+#Filling Window with background Stuff
    mainWin.fill(Colour.white)
-   
    showSprite(board, PibImg.pibPos)
    showSprite(logo,Settings.logoPos)
-#led control
+   showSprite(infotxt,(0,360))
+
+#Led control
    if(leds.redStat == 0):
-      leds.ledControl(Colour.redoff,(162,120))
+      leds.ledControl(Colour.redoff,Settings.redPos)
    else:
-      leds.ledControl(Colour.redon,(162,120))
+      leds.ledControl(Colour.redon,Settings.redPos)
    if(leds.greenStat == 0):
-      leds.ledControl(Colour.greenoff,(162,230))
+      leds.ledControl(Colour.greenoff,Settings.greenPos)
    else:
-      leds.ledControl(Colour.greenon,(162,230))
+      leds.ledControl(Colour.greenon,Settings.greenPos)
    if(leds.amberStat == 0):
-      leds.ledControl(Colour.amberoff,(162,175))
+      leds.ledControl(Colour.amberoff,Settings.amberPos)
    else:
-      leds.ledControl(Colour.amberon,(162,175))
+      leds.ledControl(Colour.amberon,Settings.amberPos)
 
       
    
    #leds.ledsSprite()
    #pg.draw.circle(mainWin, Colour.greenoff, (162,230), 20, 0)
+#Update Page
    pg.display.update()
    
 
@@ -131,6 +157,7 @@ while 1:
          break
 
 #sets frames per second
+   
    fpsClock.tick(Settings.refreshFPS)
    
 
