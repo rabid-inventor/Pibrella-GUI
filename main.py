@@ -1,27 +1,32 @@
 import pygame as pg 
 from pygame.locals import *
+import os
+
+#send to frame buffer
+os.environ["SDL_FBDEV"] = "/dev/fb1"
 #to be activated later
 #import pibrella as pib
 
 class Settings:
    #Golbal Window Settings
    version = 0.1
-   winx = 640
-   winy = 480
+   winx = 0
+   winy = 0
+   displayFlags = pg.FULLSCREEN
    refreshFPS = 50
    winRes = (winx ,winy)
    title = 'Pibrella GUI   ' + str(version)
    #Logo Settings
    logoImg = 'pibrella-logo.png'
    logoSize = (200,85)
-   logoPos = (60,0)
+   logoPos = (10,0)
    #Led Possitions
-   redPos = (162,120)
-   greenPos = (162,230)
-   amberPos = (162,175)
+   redPos = (112,100)
+   greenPos = (112,210)
+   amberPos = (112,155)
    ledtouchsize = 20
    #buzzer position
-   buzzPos = (226 ,175)
+   buzzPos = (180 ,155)
    buzztouchsize = 20
    
 
@@ -47,9 +52,9 @@ class Leds():
       self.redStat = 0
       self.greenStat = 0
       self.amberStat = 0
-   #pibleds = pibrella.light
-   #greenon = pibleds.green.on()
-   #greenoff = pibleds.green.off()
+  # pibleds = pib.light
+  # greenon = pibleds.green.on()
+  # greenoff = pibleds.green.off()
    def ledControl(self, color , location):
       pg.draw.circle(mainWin,color,location,20,0)
    
@@ -59,12 +64,12 @@ class PibImg:
    pibX = 230
    pibY = 300
    pibSize = (pibX , pibY)
-   pibPos = (50,50)
+   pibPos = (0,30)
 
 
    
 #Setting up window
-mainWin = pg.display.set_mode(Settings.winRes)
+mainWin = pg.display.set_mode(Settings.winRes,Settings.displayFlags)
 pg.display.set_caption(Settings.title)
 
 #Simplifiy fuction 
