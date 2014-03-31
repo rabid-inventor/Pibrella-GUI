@@ -1,11 +1,53 @@
 import pygame as pg 
 from pygame.locals import *
 import os
+import RPi.GPIO as GPIO
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+GPIO.setup(
 
 #send to frame buffer
 os.environ["SDL_FBDEV"] = "/dev/fb1"
 #to be activated later
 #import pibrella as pib
+
+#Setup class for pibrella pinout
+
+class Pibrella: 
+   
+      
+   PB_PIN_LIGHT_AMBER = 17
+   PB_PIN_LIGHT_GREEN = 4
+# Inputs
+   PB_PIN_INPUT_A = 9
+   PB_PIN_INPUT_B = 7
+   PB_PIN_INPUT_C = 8
+   PB_PIN_INPUT_D = 10
+# Outputs
+   PB_PIN_OUTPUT_A = 22
+   PB_PIN_OUTPUT_B = 23
+   PB_PIN_OUTPUT_C = 24
+   PB_PIN_OUTPUT_D = 25
+# Onboard button
+   PB_PIN_BUTTON = 11
+# Onboard buzzer
+   PB_PIN_BUZZER = 18
+   
+   
+   def __init__(self):
+      ledRed = PB_PIN_LIGHT_RED
+      ledAmber = PB_PIN_LIGHT_AMBER
+      ledGreen = PB_PIN_LIGHT_GREEN
+      GPIO.setup(ledRed,GPIO.OUT)
+      GPIO.setup(ledAmber,GPIO.OUT)
+      GPIO.setup(ledGreen,GPIO.OUT)
+      
+   def light(self, colour, toggle):
+      GPIO.output(colour,toggle)
+      
+      
+   
 
 class Settings:
    #Golbal Window Settings
