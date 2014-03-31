@@ -37,14 +37,21 @@ class Pibrella:
       self.ledRed = self.PB_PIN_LIGHT_RED
       self.ledAmber = self.PB_PIN_LIGHT_AMBER
       self.ledGreen = self.PB_PIN_LIGHT_GREEN
-      GPIO.setup(self.buzzer.GPIO.OUT,0)
+      GPIO.setup(self.buzzer,GPIO.OUT,0)
       GPIO.setup(self.ledRed,GPIO.OUT,0)
       GPIO.setup(self.ledAmber,GPIO.OUT,0)
       GPIO.setup(self.ledGreen,GPIO.OUT,0)
+      self.buzzpin= GPIO.PWM(self.buzzer, 440)
    def light(self, colour, toggle):
       GPIO.output(colour,toggle)
-   def buzz(self,toggle)
-      GPIO.output(self.buzzer,toggle)
+   def buzz(self,toggle):
+      print(toggle)
+      if(toggle == 0):
+         print('no BUZZ')
+         self.buzzpin.start(0)
+      else:
+         print('buzz')
+         self.buzzpin.start(50)
       
       
    
