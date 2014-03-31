@@ -5,7 +5,6 @@ import RPi.GPIO as GPIO
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
-GPIO.setup(
 
 #send to frame buffer
 os.environ["SDL_FBDEV"] = "/dev/fb1"
@@ -15,8 +14,7 @@ os.environ["SDL_FBDEV"] = "/dev/fb1"
 #Setup class for pibrella pinout
 
 class Pibrella: 
-   
-      
+   PB_PIN_LIGHT_RED = 27
    PB_PIN_LIGHT_AMBER = 17
    PB_PIN_LIGHT_GREEN = 4
 # Inputs
@@ -33,16 +31,13 @@ class Pibrella:
    PB_PIN_BUTTON = 11
 # Onboard buzzer
    PB_PIN_BUZZER = 18
-   
-   
    def __init__(self):
-      self.ledRed = PB_PIN_LIGHT_RED
-      self.ledAmber = PB_PIN_LIGHT_AMBER
-      self.ledGreen = PB_PIN_LIGHT_GREEN
-      GPIO.setup(ledRed,GPIO.OUT)
-      GPIO.setup(ledAmber,GPIO.OUT)
-      GPIO.setup(ledGreen,GPIO.OUT)
-      
+      self.ledRed = self.PB_PIN_LIGHT_RED
+      self.ledAmber = self.PB_PIN_LIGHT_AMBER
+      self.ledGreen = self.PB_PIN_LIGHT_GREEN
+      GPIO.setup(self.ledRed,GPIO.OUT)
+      GPIO.setup(self.ledAmber,GPIO.OUT)
+      GPIO.setup(self.ledGreen,GPIO.OUT)
    def light(self, colour, toggle):
       GPIO.output(colour,toggle)
       
@@ -61,15 +56,15 @@ class Settings:
    #Logo Settings
    logoImg = 'pibrella-logo.png'
    logoSize = (200,85)
-   logoPos = (10,0)
+   logoPos = (30,240)
    #Led Possitions
-   redPos = (112,100)
-   greenPos = (112,210)
-   amberPos = (112,155)
+   redPos = (114,220)
+   greenPos = (114,120)
+   amberPos = (114,170)
    ledtouchsize = 20
    #buzzer position
-   buzzPos = (180 ,155)
-   buzztouchsize = 20
+   buzzPos = (50 ,170)
+   buzztouchsize = 30
    
 
 
@@ -106,7 +101,7 @@ class PibImg:
    pibX = 230
    pibY = 300
    pibSize = (pibX , pibY)
-   pibPos = (0,30)
+   pibPos = (0,0)
 
 #Pibrella Instance
 
@@ -129,7 +124,7 @@ pg.init()
 fpsClock= pg.time.Clock()
 
 #Setup Font
-pibFont = pg.font.SysFont("monospace", 15)
+pibFont = pg.font.SysFont("monospace", 10)
 infotxt = pibFont.render(('Pibrella GUI version: ' + str(Settings.version)+ '  ' + str(fpsClock)),1,(0,0,0))
 
 #Setting up Background sprites
@@ -137,7 +132,7 @@ logo = pg.image.load(Settings.logoImg)
 logo = pg.transform.scale(logo, Settings.logoSize)
 board = pg.image.load(PibImg.pibImg)
 board = pg.transform.scale(board, PibImg.pibSize)
-
+board = pg.transform.rotate(board, 180)
 
 
 def checkMouse(cordsx, cordsy):
@@ -147,9 +142,12 @@ def checkMouse(cordsx, cordsy):
       pib.light(pib.ledRed,leds.redStat)
    if(((Settings.greenPos[0] - Settings.ledtouchsize) < cordsx <(Settings.greenPos[0] + Settings.ledtouchsize)) and (Settings.greenPos[1] - Settings.ledtouchsize) < cordsy <(Settings.greenPos[1] + Settings.ledtouchsize)):
       leds.greenStat = not leds.greenStat
-
+ #change Pibrella Leds
+      pib.light(pib.ledGreen,leds.greenStat)
    if(((Settings.amberPos[0] - Settings.ledtouchsize) < cordsx <(Settings.amberPos[0] + Settings.ledtouchsize)) and (Settings.amberPos[1] - Settings.ledtouchsize) < cordsy <(Settings.amberPos[1] + Settings.ledtouchsize)):
       leds.amberStat = not leds.amberStat
+ #change Pibrella Leds
+      pib.light(pib.ledAmber,leds.amberStat)
 
    if(((Settings.buzzPos[0] - Settings.buzztouchsize) < cordsx <(Settings.buzzPos[0] + Settings.buzztouchsize)) and (Settings.buzzPos[1] - Settings.buzztouchsize) < cordsy <(Settings.buzzPos[1] + Settings.buzztouchsize)):
       print('BUZZZZZZ!') 
@@ -168,7 +166,7 @@ while 1:
    mainWin.fill(Colour.white)
    showSprite(board, PibImg.pibPos)
    showSprite(logo,Settings.logoPos)
-   showSprite(infotxt,(0,360))
+   showSprite(infotxt,(0,0))
 
 #Led control
    if(leds.redStat == 0):
