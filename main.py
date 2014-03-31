@@ -32,14 +32,19 @@ class Pibrella:
 # Onboard buzzer
    PB_PIN_BUZZER = 18
    def __init__(self):
+      self.buzzerStat = 0
+      self.buzzer = self.PB_PIN_BUZZER
       self.ledRed = self.PB_PIN_LIGHT_RED
       self.ledAmber = self.PB_PIN_LIGHT_AMBER
       self.ledGreen = self.PB_PIN_LIGHT_GREEN
-      GPIO.setup(self.ledRed,GPIO.OUT)
-      GPIO.setup(self.ledAmber,GPIO.OUT)
-      GPIO.setup(self.ledGreen,GPIO.OUT)
+      GPIO.setup(self.buzzer.GPIO.OUT,0)
+      GPIO.setup(self.ledRed,GPIO.OUT,0)
+      GPIO.setup(self.ledAmber,GPIO.OUT,0)
+      GPIO.setup(self.ledGreen,GPIO.OUT,0)
    def light(self, colour, toggle):
       GPIO.output(colour,toggle)
+   def buzz(self,toggle)
+      GPIO.output(self.buzzer,toggle)
       
       
    
@@ -150,7 +155,10 @@ def checkMouse(cordsx, cordsy):
       pib.light(pib.ledAmber,leds.amberStat)
 
    if(((Settings.buzzPos[0] - Settings.buzztouchsize) < cordsx <(Settings.buzzPos[0] + Settings.buzztouchsize)) and (Settings.buzzPos[1] - Settings.buzztouchsize) < cordsy <(Settings.buzzPos[1] + Settings.buzztouchsize)):
-      print('BUZZZZZZ!') 
+      pib.buzzerStat = not pib.buzzerStat
+      pib.buzz(pib.buzzerStat)
+      print('BUZZZZZZ!')
+      
       #leds.ledsSprite()
       #print('click')
       return
