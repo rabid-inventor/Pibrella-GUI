@@ -36,9 +36,9 @@ class Pibrella:
    
    
    def __init__(self):
-      ledRed = PB_PIN_LIGHT_RED
-      ledAmber = PB_PIN_LIGHT_AMBER
-      ledGreen = PB_PIN_LIGHT_GREEN
+      self.ledRed = PB_PIN_LIGHT_RED
+      self.ledAmber = PB_PIN_LIGHT_AMBER
+      self.ledGreen = PB_PIN_LIGHT_GREEN
       GPIO.setup(ledRed,GPIO.OUT)
       GPIO.setup(ledAmber,GPIO.OUT)
       GPIO.setup(ledGreen,GPIO.OUT)
@@ -108,7 +108,9 @@ class PibImg:
    pibSize = (pibX , pibY)
    pibPos = (0,30)
 
+#Pibrella Instance
 
+pib = Pibrella()
    
 #Setting up window
 mainWin = pg.display.set_mode(Settings.winRes,Settings.displayFlags)
@@ -141,7 +143,8 @@ board = pg.transform.scale(board, PibImg.pibSize)
 def checkMouse(cordsx, cordsy):
    if(((Settings.redPos[0] - Settings.ledtouchsize) < cordsx <(Settings.redPos[0] + Settings.ledtouchsize)) and (Settings.redPos[1] - Settings.ledtouchsize) < cordsy <(Settings.redPos[1] + Settings.ledtouchsize)):
       leds.redStat = not leds.redStat
-
+      #change Pibrella Leds
+      pib.light(pib.ledRed,leds.redStat)
    if(((Settings.greenPos[0] - Settings.ledtouchsize) < cordsx <(Settings.greenPos[0] + Settings.ledtouchsize)) and (Settings.greenPos[1] - Settings.ledtouchsize) < cordsy <(Settings.greenPos[1] + Settings.ledtouchsize)):
       leds.greenStat = not leds.greenStat
 
